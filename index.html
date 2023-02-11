@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<!-- 参考にしたサイト>
+    http://keylopment.com/faq/1561/#:~:text=%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88%E3%81%AE%E6%94%B9%E8%A1%8C%E3%82%B3%E3%83%BC%E3%83%89%E3%82%92,%E3%81%94%E3%81%A8%E3%81%AB%E9%85%8D%E5%88%97%E5%8C%96%E3%81%97%E3%81%BE%E3%81%99%E3%80%82
+    https://www-creators.com/archives/2496
+    https://kouhekikyozou.com/css_arrow_button
+
+    # 更新履歴
+    2023/02/12 Ver0.1.0 SlackからNotionに変換するバージョンを作成 by.Taiki Suzuki
+<!-->
+
+<style>
+    textarea {
+        resize: none;
+        vertical-align: top;
+        max-width: 500px;
+        max-height: 500px;
+        min-width: 100px;
+        min-height: 100px;
+        width: 400px;
+        height: 300px
+    }
+
+    form input[type="submit"] {
+        display: inline-block;
+        background: #d13415;
+        padding: 10px;
+        text-align: center;
+        color: #FFF;
+        margin: 5px;
+        border: 1px solid;
+        cursor: pointer;
+        width: 150px;
+    }
+
+    img {
+        max-width: 50%;
+        height: auto;
+    }
+
+    hr {
+        border-top: 3px double #ccc;
+    }
+
+    ol {
+        background: #f3fbff;
+        border: 2px rgb(135, 235, 178) dashed;
+    }
+
+    ol li {
+        /*olの中のliの文字色を変える*/
+        color: #000000;
+    }
+
+    .arrow_button {
+        display: inline-block;
+        position: relative;
+        padding: 10px 20px 10px 47px;
+        background: #005c4b;
+        /* デフォルトの背景色 */
+        border-radius: 10px;
+        color: #fff;
+        /* テキストの色 */
+        transition: background-color 1s, box-shadow 1.5s;
+    }
+
+    .arrow_button::before {
+        /* 矢印の表示設定 */
+        content: "";
+        position: absolute;
+        margin: auto;
+        top: 0;
+        bottom: 0;
+        left: 18px;
+        width: 10px;
+        height: 10px;
+        border-top: 3px solid #fff;
+        border-right: 3px solid #fff;
+        transform: rotate(45deg);
+    }
+
+    .arrow_button::after {
+        /* 矢印の丸枠の表示設定 */
+        content: "";
+        position: absolute;
+        margin: auto;
+        top: 0;
+        bottom: 0;
+        left: 13px;
+        width: 23px;
+        height: 23px;
+        border: 3px solid #fff;
+        border-radius: 50%;
+    }
+
+    .arrow_button:hover {
+        /* マウスオーバー時のスタイル */
+        background-color: #019d81;
+        /* マウスオーバー時の背景色 */
+        box-shadow: 2px 3px 2px rgba(203, 184, 184, 0.1)
+            /* マウスオーバー時につける影 */
+    }
+
+    .atension {
+        color: red;
+        text-decoration: underline;
+    }
+</style>
+
+
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Slack->Notion変換</title>
+</head>
+
+
+<body>
+
+    <h1>Slack -> Notion 変換</h1>
+    <hr>
+    <table class="ba-box clearfix">
+        <tr>
+            <div class="before-box">
+
+                <td><textarea id="inputslack" class="inputslack" name="inputslack"
+                        placeholder="Slackのテキストを貼り付ける"></textarea>
+                </td>
+            </div>
+            <td><button id="convert-button" class="arrow_button" href="#">変換</button></td>
+            <div class="after-box">
+
+                <td><textarea id="outputnotion" class="outputnotion" name="outputnotion" placeholder="Notion用のテキストが表示"
+                        readonly></textarea></td>
+            </div>
+
+        </tr>
+
+    </table>
+    <hr>
+
+
+    <h1>このサイトの使い方</h1>
+    <h3>1. スケマネだよりのメッセージをコピーする</h3>
+    <h3>2. コピーしたものをSlackのテキストボックス（画像）に貼り付け</h3>
+    <img class="slack" src="slack.png" alt="">
+    <p class="atension">※この処理を飛ばすと上手く行かないので注意！</p>
+
+    <h3>3. 貼り付けたメッセージをコピーする</h3>
+    <h3>4. 左側のテキストボックスに貼り付けて変換</h3>
+    <h3>5. 右側のテキストボックスに出た文章をNotionに貼り付け</h3>
+    <h3>6. | 入力してください...　を削除</h3>
+    <hr>
+
+    <h1>これを使うメリット</h1>
+    <ol>
+        <li>ある程度まとまった区切りを行うので、手動の修正が楽になります</li>
+        <li>スタンプコピー対策済みなので、削除が楽になります（スタンプの位置に「＄」が入ってます）<br>
+            ※もしNotionでもスタンプを挿入したい場合は「/emoji」と打てば挿入できます</li>
+    </ol>
+
+    <h1>注意事項</h1>
+    <ol>
+        <li>タイトル、バリュー設定、画像挿入は各自でお願いします</li>
+        <li>太字、コードブロック、引用符は手動で追加して下さい</li>
+        <li>Notion -> Slack は対応してないです（今後作成予定）</li>
+        <li>スケマネバリューのスタンプが使えないので修正して下さい</li>
+        <li>URLはNotionの機能で貼り付けた方が綺麗になります</li>
+        <li>半日で作った突貫品なのでバグが起きる可能性大<br>
+            ※問題や要望が有ればシロクマのたいちゃんの方に連絡下さい！</li>
+    </ol>
+
+
+    <script>
+        const convertButton = document.querySelector("#convert-button");
+        const inputslackTextarea = document.querySelector("#inputslack");
+        const outputTextarea = document.querySelector("#outputnotion");
+
+        convertButton.addEventListener("click", function () {
+            var text = inputslackTextarea.value.replace(/\r\n|\r/g, "\n");
+            var lines = text.split('\n');
+            var inputslackArray = [];
+
+            const stampPattern = /:.*:/;
+            for (var i = 0; i < lines.length; i++)
+            {
+                // 空行を変換
+                if (lines[i] == '' || lines[i] == '　')
+                {
+                    lines[i] = '>'
+                } else if (lines[i].match(stampPattern))
+                {
+                    lines[i] = lines[i].replace(stampPattern, "＄")
+                }
+
+                inputslackArray.push(lines[i]);
+            }
+            if (inputslackArray.length)
+            {
+                var inputslackhtml = "";
+                // inputslackhtml = inputslackhtml + '<ul>\n';
+                for (var i = 0; i < inputslackArray.length; i++)
+                {
+                    inputslackhtml += inputslackArray[i] + '\n\n';
+                }
+                // inputslackhtml = inputslackhtml + '</ul>';
+                outputTextarea.value = inputslackhtml;
+            }
+        });
+    </script>
+
+</body>
+
+</html>
