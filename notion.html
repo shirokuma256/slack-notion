@@ -23,21 +23,21 @@
 
 
 <body>
-    <a href="sub_page.html">テストページ</a>
-    <h1>Slack -> Notion 変換</h1>
+    <a href="index.html">Slack->Notion変換はこちらから</a>
+    <h1>Notion -> Slack 変換</h1>
     <hr>
     <table class="ba-box clearfix">
         <tr>
             <div class="before-box">
 
-                <td><textarea id="inputslack" class="inputslack" name="inputslack"
-                        placeholder="Slackのテキストを貼り付ける"></textarea>
+                <td><textarea id="inputNotion" class="inputNotion" name="inputNotion"
+                        placeholder="Notionのテキストを貼り付ける"></textarea>
                 </td>
             </div>
             <td><button id="convert-button" class="arrow_button" href="#">変換</button></td>
             <div class="after-box">
 
-                <td><textarea id="outputnotion" class="outputnotion" name="outputnotion" placeholder="Notion用のテキストが表示"
+                <td><textarea id="outputSlack" class="outputSlack" name="outputSlack" placeholder="Slack用のテキストが表示"
                         readonly></textarea></td>
             </div>
 
@@ -50,7 +50,7 @@
     <h1>このサイトの使い方</h1>
     <h3>1. スケマネだよりのメッセージをコピーする</h3>
     <h3>2. コピーしたものをSlackのテキストボックス（画像）に貼り付け</h3>
-    <img class="slack" src="slack.png" alt="">
+    <img class="notion" src="notion.png" alt="">
     <p class="atension">※この処理を飛ばすと上手く行かないので注意！</p>
 
     <h3>3. 貼り付けたメッセージをコピーする</h3>
@@ -80,38 +80,38 @@
 
     <script>
         const convertButton = document.querySelector("#convert-button");
-        const inputslackTextarea = document.querySelector("#inputslack");
-        const outputTextarea = document.querySelector("#outputnotion");
+        const inputNotionTextarea = document.querySelector("#inputNotion");
+        const outputTextarea = document.querySelector("#outputSlack");
 
         convertButton.addEventListener("click", function () {
-            var text = inputslackTextarea.value.replace(/\r\n|\r/g, "\n");
+            var text = inputNotionTextarea.value.replace(/\r\n|\r/g, "\n");
             var lines = text.split('\n');
-            var inputslackArray = [];
+            var inputNotionArray = [];
 
-            const stampPattern = /:.*:/;
+            const stampPattern = /\*\*/g;
+            //const stampPattern = /:.*:/;
             for (var i = 0; i < lines.length; i++)
             {
-                // 空行を変換
-                if (lines[i] == '' || lines[i] == '　')
-                {
-                    lines[i] = '>'
-                } else if (lines[i].match(stampPattern))
-                {
-                    lines[i] = lines[i].replace(stampPattern, "＄")
+                // 空行を飛ばす
+                if (lines[i] == '' && lines[i+1] != '') {
+                    continue;
+                } 
+                else if (lines[i].match(stampPattern)) {
+                    lines[i] = lines[i].replace(stampPattern, "\*")
                 }
 
-                inputslackArray.push(lines[i]);
+                inputNotionArray.push(lines[i]);
             }
-            if (inputslackArray.length)
+            if (inputNotionArray.length)
             {
-                var inputslackhtml = "";
-                // inputslackhtml = inputslackhtml + '<ul>\n';
-                for (var i = 0; i < inputslackArray.length; i++)
+                var inputNotionhtml = "";
+                // inputNotionhtml = inputNotionhtml + '<ul>\n';
+                for (var i = 0; i < inputNotionArray.length; i++)
                 {
-                    inputslackhtml += inputslackArray[i] + '\n\n';
+                    inputNotionhtml += inputNotionArray[i] + '\n\n';
                 }
-                // inputslackhtml = inputslackhtml + '</ul>';
-                outputTextarea.value = inputslackhtml;
+                // inputNotionhtml = inputNotionhtml + '</ul>';
+                outputTextarea.value = inputNotionhtml;
             }
         });
     </script>

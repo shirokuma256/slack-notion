@@ -86,36 +86,38 @@
         convertButton.addEventListener("click", function () {
             var text = inputslackTextarea.value.replace(/\r\n|\r/g, "\n");
             var lines = text.split('\n');
-            var inputslackArray = [];
+            var inputSlackArray = [];
 
             const stampPattern = /:.*:/;
             for (var i = 0; i < lines.length; i++)
             {
                 // 空行を変換
-                if (lines[i] == '' || lines[i] == '　')
-                {
+                if (lines[i] == '' || lines[i] == '　') {
                     lines[i] = '>'
-                } else if (lines[i].match(stampPattern))
-                {
+                } 
+                // スタンプを変換
+                else if (lines[i].match(stampPattern)) {
                     lines[i] = lines[i].replace(stampPattern, "＄")
                 }
 
-                inputslackArray.push(lines[i]);
+                inputSlackArray.push(lines[i]);
             }
-            if (inputslackArray.length)
+            if (inputSlackArray.length)
             {
-                var inputslackhtml = "";
-                // inputslackhtml = inputslackhtml + '<ul>\n';
-                for (var i = 0; i < inputslackArray.length; i++)
+                var inputSlackhtml = "";
+                // inputSlackhtml = inputSlackhtml + '<ul>\n';
+                for (var i = 0; i < inputSlackArray.length; i++)
                 {
-                    inputslackhtml += inputslackArray[i] + '\n\n';
+                    inputSlackhtml += inputSlackArray[i] + '\n\n';
                 }
-                // inputslackhtml = inputslackhtml + '</ul>';
-                outputTextarea.value = inputslackhtml;
+                // inputSlackhtml = inputSlackhtml + '</ul>';
+                outputTextarea.value = inputSlackhtml;
             }
         });
     </script>
 
 </body>
+
+<a href="sub_page.html">テストページ</a>
 
 </html>
