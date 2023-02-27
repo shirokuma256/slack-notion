@@ -3,9 +3,6 @@
     http://keylopment.com/faq/1561/#:~:text=%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88%E3%81%AE%E6%94%B9%E8%A1%8C%E3%82%B3%E3%83%BC%E3%83%89%E3%82%92,%E3%81%94%E3%81%A8%E3%81%AB%E9%85%8D%E5%88%97%E5%8C%96%E3%81%97%E3%81%BE%E3%81%99%E3%80%82
     https://www-creators.com/archives/2496
     https://kouhekikyozou.com/css_arrow_button
-
-    # 更新履歴
-    2023/02/12 Ver0.1.0 SlackからNotionに変換するバージョンを作成 by.Taiki Suzuki
 <!-->
 
 <style>
@@ -48,20 +45,23 @@
 
 
     <h1>このサイトの使い方</h1>
-    <h3>1. スケマネだよりのメッセージをコピーする</h3>
-    <h3>2. コピーしたものをSlackのテキストボックス（画像）に貼り付け</h3>
+    <h3>1. Notion上で作成したスケマネだよりをコピー</h3>
+    <h3>2. 左側のテキストボックスに貼り付けて変換</h3>
+    <h3>3. 右側のテキストボックスに出た文章をNotionに貼り付け</h3>
+    <h3>4. 画像に示す「適用」をクリック</h3>
     <img class="notion" src="notion.png" alt="">
-    <p class="atension">※この処理を飛ばすと上手く行かないので注意！</p>
-
-    <h3>3. 貼り付けたメッセージをコピーする</h3>
-    <h3>4. 左側のテキストボックスに貼り付けて変換</h3>
-    <h3>5. 右側のテキストボックスに出た文章をNotionに貼り付け</h3>
-    <h3>6. | 入力してください...　を削除</h3>
+    <h4 class="atension">※もし、「適用」が出ない場合は「Ctrl + Shift + F」を一緒に押す</h4>
+    
     <hr>
 
     <h1>これを使うメリット</h1>
     <ol>
-        <li>ある程度まとまった区切りを行うので、手動の修正が楽になります</li>
+        <li>SlackからNotionに変換する場合に比べて以下の項目の編集する必要が無くなります</li>
+        <ol>
+            <li>（殆どの）スタンプの編集が要らないです</li>
+            <li>太字、コードブロック、引用符の追加</li>
+            <li></li>
+        </ol>
         <li>スタンプコピー対策済みなので、削除が楽になります（スタンプの位置に「＄」が入ってます）<br>
             ※もしNotionでもスタンプを挿入したい場合は「/emoji」と打てば挿入できます</li>
     </ol>
@@ -87,30 +87,86 @@
             var text = inputNotionTextarea.value.replace(/\r\n|\r/g, "\n");
             var lines = text.split('\n');
             var inputNotionArray = [];
+            
 
-            const stampPattern = /\*\*/g;
-            //const stampPattern = /:.*:/;
-            for (var i = 0; i < lines.length; i++)
-            {
-                // 空行を飛ばす
-                if (lines[i] == '' && lines[i+1] != '') {
+            var quotationFlag = false;
+            const quotationPattern = /^\>\s.*$/;
+            
+            const boldPattern = /\*\*/g;
+            const strikePattern = /\~\~/g;
+
+            var itemVal = 0;
+            
+            for (var i = 0; i < lines.length; i++) {
+                //スペース処理（一旦なしで）
+                /*
+                if (lines[i] == '') {
+                    // 1行のスペースを埋める
+                    if (lines[i+1] != '') {
+                        continue;
+                    }
+                    // 2行以上のスペースが空いている場合
+                    while (lines[i+1] != '') {
+                        i++;
+                    }
+                }
+                */
+
+                //タイトル処理
+                if (lines[i].match(/^(?!.*\~\~).*(?=\~).*$/)) {
+                    lines[i] = lines[i].replace(/\~/g, "～")
+                }
+
+                //引用符の終了処理（先に記載しないと上手く動作しない）
+                if (quotationFlag == true && lines[i].match("> ")) {
+                    quotationFlag = false
                     continue;
+                }
+
+                // 引用符の開始処理
+                if (lines[i].match(quotationPattern)) {
+                    quotationFlag = true
                 } 
-                else if (lines[i].match(stampPattern)) {
-                    lines[i] = lines[i].replace(stampPattern, "\*")
+                //引用符追加
+                else if (quotationFlag == true) {
+                    lines[i] = "> " + lines[i]
+                }                
+                
+                //太字処理
+                if (lines[i].match(boldPattern)) {
+                    while(lines[i].match(boldPattern)) {
+                        lines[i] = lines[i].replace(/\*\*/, " \*")
+                        lines[i] = lines[i].replace(/\*\*/, "\* ")
+                    }
+                }
+
+                //取り消し線処理
+                if (lines[i].match(strikePattern)) {
+                    while(lines[i].match(strikePattern)) {
+                        lines[i] = lines[i].replace(/\~\~/, " \~")
+                        lines[i] = lines[i].replace(/\~\~/, "\~ ")
+                    }
+                }
+
+                //箇条書き
+                if (lines[i].match("- ")) {
+                    lines[i] = lines[i].replace("- ", " *・* ")
+                }
+
+                //数字リスト
+                if (lines[i].match("1. ")) {
+                    itemVal++;
+                    lines[i] = lines[i].replace("1. ", itemVal + "．")
                 }
 
                 inputNotionArray.push(lines[i]);
             }
-            if (inputNotionArray.length)
-            {
+            if (inputNotionArray.length) {
                 var inputNotionhtml = "";
-                // inputNotionhtml = inputNotionhtml + '<ul>\n';
                 for (var i = 0; i < inputNotionArray.length; i++)
                 {
-                    inputNotionhtml += inputNotionArray[i] + '\n\n';
+                    inputNotionhtml += inputNotionArray[i] + '\n';
                 }
-                // inputNotionhtml = inputNotionhtml + '</ul>';
                 outputTextarea.value = inputNotionhtml;
             }
         });
