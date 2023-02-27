@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Slack->Notion変換</title>
+</head>
+
+
+<body>
+
+
+    <div class="ba-box clearfix">
+        <div class="before-box">
+            <h4 class="title-mark"><label for="override">ここにテキストを貼り付けてください。</label></h4>
+            <textarea id="override" class="override" name="override" rows="10"></textarea>
+        </div>
+        <div class="after-box">
+            <button id="convert-button">変換</button>
+            <h4 class="title-mark type02"><label for="outputhtml">ここにulのリストのhtmlが表示されます。</label></h4>
+            <textarea id="outputhtml" class="outputhtml" name="outputhtml" rows="10" readonly></textarea>
+        </div>
+    </div>
+
+    <script>
+        const convertButton = document.querySelector("#convert-button");
+        const overrideTextarea = document.querySelector("#override");
+        const outputTextarea = document.querySelector("#outputhtml");
+
+        convertButton.addEventListener("click", function () {
+            var text = overrideTextarea.value.replace(/\r\n|\r/g, "\n");
+            var lines = text.split('\n');
+            var overrideArray = [];
+            for (var i = 0; i < lines.length; i++)
+            {
+                // 空行は無視する
+                if (lines[i] == '')
+                {
+                    // continue;
+                    lines[i] = '>'
+                }
+                overrideArray.push(lines[i]);
+            }
+            if (overrideArray.length)
+            {
+                var overridehtml = "";
+                // overridehtml = overridehtml + '<ul>\n';
+                for (var i = 0; i < overrideArray.length; i++)
+                {
+                    overridehtml += overrideArray[i] + '\n\n';
+                }
+                // overridehtml = overridehtml + '</ul>';
+                outputTextarea.value = overridehtml;
+            }
+        });
+    </script>
+
+</body>
+
+</html>
